@@ -12,6 +12,7 @@ function RecommendationContent(){
   const [value, setValue] = useState('N/A');
   const [imagePath, setImagePath] = useState('');
   const [analysis, setAnalysis] = useState('');
+
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -24,7 +25,7 @@ function RecommendationContent(){
     if (result) {
       console.log('Raw result:', result);
 
-      const [description, list, recommendationResult] = result.split('%%%').map(part => part.trim());
+      const [description, list, recommendationResult, recommendationExplanation] = result.split('%%%').map(part => part.trim());
       const recommendationUpper = recommendationResult.toUpperCase();
       setRecommendation(recommendationUpper);
       
@@ -36,7 +37,7 @@ function RecommendationContent(){
       });
 
       // Set the analysis using the parsed details
-      setAnalysis(`Type: ${details.type}, Brand: ${details.brand}, Material: ${details.material}, Style: ${details.style}, Color: ${details.color}, State: ${details.state}`);
+      setAnalysis(`${recommendationExplanation}`);
       
       // Set value only if recommendation is THRIFT and price is available
       if (recommendationUpper === 'THRIFT' && price) {
@@ -58,13 +59,13 @@ function RecommendationContent(){
   console.log(imagePath);
 
   return (
-      <div className="absolute inset-0 flex justify-center items-center h-svh overflow-hidden p-4">
+      <div className="inset-0 flex justify-center items-center overflow-hidden mx-4 z-10">
         <div className="bg-white rounded-[2rem] shadow-lg p-8 max-w-md w-full">
           <main className="flex flex-col items-center text-center">
             <h2 className="text-xl mb-4">Your uploaded photo:</h2>
             <div className="w-64 h-64 bg-gray-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
               {imagePath ? (
-                <Image src={imagePath} alt="Uploaded clothing" width={256} height={256} objectFit="contain" />
+                <Image src={imagePath} alt="Your clothing" width={256} height={256} objectFit="contain" />
               ) : (
                 <span className="block text-sm text-gray-500">No image uploaded</span>
               )}
@@ -92,7 +93,7 @@ function RecommendationContent(){
 
 export default function RecommendationPage() {
   return (
-    <div className="absolute inset-0 flex justify-center items-center h-svh overflow-hidden p-4">
+    <div className="inset-0 flex justify-center items-center overflow-hidden mx-4 z-10">
       <Suspense fallback={<div>Loading...</div>}>
         <RecommendationContent />
       </Suspense>
